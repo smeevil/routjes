@@ -2,7 +2,10 @@ Routjes
 =======
 ![](https://img.shields.io/hexpm/v/routjes.svg) ![](https://img.shields.io/hexpm/dt/routjes.svg) ![](https://img.shields.io/hexpm/dw/routjes.svg) ![](https://img.shields.io/github/issues/smeevil/routjes.svg) ![](https://img.shields.io/github/issues-pr/smeevil/routjes.svg)
 
-Routjes is an Elixir library that
+Routjes is an Elixir library that can extract Phoenix router paths and create a java/typescript module of them.
+
+Routjes is a Dutch / English word. In Dutch there is an habit of referring to normal things as small, we do this by adding 'tje' to the object.
+Coincidentally you pronounce Routjes the same as your would in English as "Route JS".
 
 ## Getting started
 

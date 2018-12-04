@@ -5,9 +5,13 @@ defmodule Routjes.MixProject do
     [
       app: :routjes,
       version: "1.0.0",
+      description: """
+        An Elixir library that can extract the Phoenix router paths and create a java/typescript module of them.
+      """,
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      package: package(),
       dialyzer: [
         ignore_warnings: ".dialyzer_ignore",
         flags: [
@@ -33,6 +37,17 @@ defmodule Routjes.MixProject do
       {:dialyxir, ">= 0.0.0", [only: :dev]},
       {:credo, ">= 0.0.0", [only: :dev]},
       {:poison, ">= 0.0.0"},
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Gerard de Brieder"],
+      licenses: ["WTFPL"],
+      files: ["lib", "mix.exs", "README*", "LICENSE*", "CHANGELOG*"],
+      links: %{
+        "GitHub" => "https://github.com/smeevil/routjes",
+      }
     ]
   end
 end
