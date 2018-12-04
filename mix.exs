@@ -33,10 +33,11 @@ defmodule Routjes.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix, ">= 0.0.0"},
-      {:dialyxir, ">= 0.0.0", [only: :dev]},
       {:credo, ">= 0.0.0", [only: :dev]},
+      {:dialyxir, ">= 0.0.0", [only: :dev]},
+      {:phoenix, ">= 0.0.0"},
       {:poison, ">= 0.0.0"},
+      {:ex_doc, ">= 0.0.0"},
     ]
   end
 
