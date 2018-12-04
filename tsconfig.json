@@ -1,0 +1,16 @@
+{
+  "baseUrl": "types",
+  "typeRoots": [
+    "types"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "esnext"
+    ],
+    "allowJs": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "target": "es5"
+  }
+}

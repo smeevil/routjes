@@ -1,0 +1,41 @@
+define(["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Store = {
+        host: '<%= host %>',
+        ReplaceVars: function (route, args) {
+            var path = Store.routes[route].path;
+            if (args === undefined || !Object.keys(args).length)
+                return path;
+            for (var _i = 0, _a = Object.entries(args); _i < _a.length; _i++) {
+                var _b = _a[_i], key = _b[0], value = _b[1];
+                path = path.replace(":" + key, value);
+            }
+            return path;
+        },
+        ToQueryString: function (params) {
+            return Object.keys(params).reduce(function (map, key) {
+                map.push(key + '=' + encodeURIComponent(params[key]));
+                return map;
+            }, []).join('&');
+        },
+        GenerateProperties: function (route, args, params) {
+            if (params === void 0) { params = null; }
+            var path = Store.ReplaceVars(route, args);
+            if (params != null) {
+                path = path + "?" + Store.ToQueryString(params);
+            }
+            return {
+                path: path,
+                url: Store.host + path
+            };
+        },
+        routes: <%= Poison.encode!(routes) %>
+    };
+    var Routjes = {
+    <%= for {route, options} <- routes do %>
+      <%=route%>:  function(args, params) {return Store.GenerateProperties('<%= route %>', args, params);},
+    <%end%>
+    };
+    exports.default = Routjes;
+});

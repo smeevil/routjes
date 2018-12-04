@@ -1,0 +1,45 @@
+interface IRoutjesResult {
+  path: string
+  url: string
+}
+
+const Store = {
+  host: '<%= host %>',
+
+  ReplaceVars(route: string, args: object): string {
+    let path = Store.routes[route].path;
+    if (args === undefined || !Object.keys(args).length) return path;
+    for (let [key, value] of Object.entries(args)) path = path.replace(`:${key}`, value);
+    return path;
+  },
+
+  ToQueryString(params : object) : string {
+    return Object.keys(params).reduce((map, key) => {
+      map.push(key + '=' + encodeURIComponent(params[key]));
+      return map;
+    }, []).join('&');
+  },
+
+  GenerateProperties(route: string, args: object, params: object | null = null): IRoutjesResult {
+    let path = Store.ReplaceVars(route, args);
+
+    if (params != null) path = path + "?" + Store.ToQueryString(params);
+
+    return {
+      path: path,
+      url: Store.host + path
+    };
+  },
+
+  routes: <%= Poison.encode!(routes) %>
+};
+
+const Routjes = {
+<%= for {route, options} <- routes do %>
+  <%args = Enum.map(options.args, &("#{&1}: string | number"))%>
+  <%args = if Enum.count(args) > 0, do: "args: {#{Enum.join(args, ",")}}", else: "args?: {}" %>
+  <%=route%>:  (<%= args %>, params?: object) : IRoutjesResult => Store.GenerateProperties('<%= route %>', args, params),
+<%end%>
+};
+
+export default Routjes;
