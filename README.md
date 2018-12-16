@@ -56,6 +56,23 @@ An example looks like :
 
 All routes are made into functions to help with autocomplete.
 
+# When using Routjes in umbrella apps
+
+### Settings
+
+When you are using routjes in multiple umbralla apps you need to scope the config in config.exs like so:
+
+```elixir
+config :my_app, :routjes,
+  output_dir: __DIR__ <> "/../assets/js",
+  output_file: "routjes.ts",
+  router: MyApp.Web.Router,
+  end_point: MyApp.Web.Endpoint
+```
+
+### Usage
+Then to generate the (type|java)script source files in the umbrella, invoking the mix task with:
+`mix routjes.generate my_app`
 
 ## License
 

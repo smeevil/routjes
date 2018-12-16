@@ -4,7 +4,7 @@ defmodule Routjes.MixProject do
   def project do
     [
       app: :routjes,
-      version: "1.0.0",
+      version: "1.1.0",
       description: """
         An Elixir library that can extract the Phoenix router paths and create a java/typescript module of them.
       """,

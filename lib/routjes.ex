@@ -4,21 +4,37 @@ defmodule Routjes do
   javascript(.js) or typescript(.ts) file. Depending on the extension given in the output_file configuration.
   """
 
-  @spec generate() :: {:ok, binary} | no_return
-  def generate() do
-    get_config()
+  @spec generate(scope :: binary | nil) :: {:ok, binary} | no_return
+  def generate(scope \\ nil) do
+
+    scope
+    |> get_config()
+    |> IO.inspect(label: "config")
     |> check_config()
     |> maybe_start_end_point()
     |> generate_script()
   end
 
-  @spec get_config() :: map
-  defp get_config do
+  @spec get_config(scope :: binary | nil) :: map
+  defp get_config(scope) do
     Enum.into(
       [:router, :end_point, :output_dir, :output_file],
       %{},
-      &{&1, Application.get_env(:routjes, &1)}
+      &(get_env(&1, scope))
     )
+  end
+
+  defp get_env(setting, nil) do
+    {setting, Application.get_env(:routjes, setting)}
+  end
+
+  defp get_env(setting, scope) do
+    value = scope
+    |> String.to_atom
+    |> Application.get_env(:routjes, [])
+    |> Enum.into(%{})
+    |> Map.get(setting, nil)
+    {setting, value}
   end
 
   @spec check_config(map) :: map | no_return
@@ -38,8 +54,7 @@ defmodule Routjes do
     file_location = config.output_dir <> "/" <> config.output_file
     routes = Enum.reduce(config.router.__routes__, %{}, &parse(&1, &2))
 
-    template =
-      if String.ends_with?(config.output_file, ".ts"), do: "typescript", else: "javascript"
+    template = if String.ends_with?(config.output_file, ".ts"), do: "typescript", else: "javascript"
 
     :ok =
       File.write(
@@ -51,7 +66,7 @@ defmodule Routjes do
         )
       )
 
-    IO.puts("routjes written to #{inspect(String.replace(file_location, File.cwd!(), ""))} :) ")
+    IO.puts("routjes written to #{inspect(String.replace(file_location, File.cwd!(), "."))} :) ")
     {:ok, file_location}
   end
 
@@ -68,12 +83,12 @@ defmodule Routjes do
   end
 
   @spec parse(map, map) :: map
-  defp parse(%{helper: helper, opts: action, path: path}, map) when not is_nil(helper) do
+  def parse(%{helper: helper, opts: action, path: path}, map) when not is_nil(helper) do
     generate_function_name(helper, action)
     add_key(map, helper, action, path)
   end
 
-  defp parse(_route, map), do: map
+  def parse(_route, map), do: map
 
   @spec generate_function_name(binary, binary) :: binary
   defp generate_function_name(helper, action), do: Macro.camelize("#{helper}_#{action}")
@@ -104,7 +119,7 @@ defmodule Routjes do
     Invalid or missing configuration for Routjes.
     Please add the following configuration to your config/config.exs
 
-    config :routjes,
+    config :my_app, :routjes,
       output_dir: __DIR__ <> "/../assets/js",
       output_file: "routjes.ts",
       router: MyApp.Web.Router,
